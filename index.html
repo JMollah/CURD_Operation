@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <title>Subjects</title>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">Navbar</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                    <div class="navbar-nav">
+                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                        <a class="nav-link" href="#">Features</a>
+                        <a class="nav-link" href="#">Pricing</a>
+                        <a class="nav-link disabled">Disabled</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="main">
+        <div class="container mt-5 col-6">
+            <div class="input-group mb-3">
+                <input id="input" type="text" class="form-control" placeholder="New Subject Name" aria-label="Recipient's username" aria-describedby="button-addon2" required>
+                <button class="btn btn-outline-secondary py-3 px-4" type="button" id="button-addon2">Add</button>
+            </div>
+            <ul id="ul" class="list-group">
+                <!-- <li class="list-group-item form-control d-flex mb-2 rounded-pill">
+                    <h3 class="flex-grow-1">Physics</h3>
+                    <button type="button" class="btn btn-warning mx-2 rounded-pill" onclick="editSubject(this)">Edit</button>
+                    <button type="button" class="btn btn-danger rounded-pill" onclick="removeSubject(this)">Remove</button>
+                </li> -->
+            </ul>
+        </div>
+    </div>
+    
+    <script>
+        let arr = ["a","b","c","d"];
+        //console.log(arr);
+        arr = arr.filter(item => item !== "c");
+        //console.log(arr);
+
+        let array = [];
+        let input = document.getElementById("input");
+        let addBtn = document.getElementById("button-addon2");
+        let ul = document.getElementById("ul");
+        let listCurrContent = "";
+        let currEvent = false;
+        addBtn.addEventListener('click', addSubject);
+
+        function addSubject() {
+            let inputValue = input.value.trim();
+            if(inputValue){
+                if(!array.includes(inputValue)){
+                    let li = document.createElement('li');
+                    li.className = "list-group-item form-control d-flex mb-2 rounded-pill";
+                    li.innerHTML = `<h3 class="flex-grow-1">${inputValue}</h3>
+                        <button type="button" class="btn btn-warning mx-2 rounded-pill" onclick="editSubject(this)">Edit</button>
+                        <button type="button" class="btn btn-danger rounded-pill" onclick="removeSubject(this)">Remove</button>`;
+                    ul.appendChild(li);
+                    array.push(inputValue);
+                } else {
+                    alert("Subject Name Already Exist");
+                }
+            } else {
+                alert("Subject Name Can't be Empty");
+            }
+            input.value = "";
+            console.log(array);
+        }
+
+        function removeSubject(currElem) {
+            if(currElem.innerText == "Remove") {
+                let parentElem = currElem.parentElement;
+                let prevElem3 = currElem.previousElementSibling;
+                let prevElem4 = prevElem3.previousElementSibling;
+                array = array.filter(item => item !== prevElem4.innerText);
+                //console.log(array);
+                parentElem.remove();
+            } else if(currElem.innerText == "Cancel") {
+                let prevElem1 = currElem.previousElementSibling;
+                let prevElem2 = prevElem1.previousElementSibling;
+                let newHeaderElem = document.createElement('h3');
+                newHeaderElem.className = "flex-grow-1";
+                newHeaderElem.innerText = listCurrContent;
+                prevElem2.parentNode.replaceChild(newHeaderElem, prevElem2);
+                currElem.innerText = "Remove";
+                prevElem1.innerText = "Edit";
+                currEvent = false;
+            }
+        }
+
+        function editSubject(currElem) {
+            let prevElem = currElem.previousElementSibling;
+            let nextElem = currElem.nextElementSibling;
+            
+            if(currElem.innerText == "Edit") {
+                if(!currEvent) {
+                    currEvent = true;
+                    let subjectName = prevElem.innerText;
+                    let newInputElem = document.createElement('input');
+                    newInputElem.type = "text";
+                    newInputElem.className = "form-control";
+                    newInputElem.style="border-radius: 30px;";
+                    newInputElem.value = subjectName;
+                    prevElem.parentNode.replaceChild(newInputElem, prevElem);
+                    currElem.innerText = "Done";
+                    nextElem.innerText = "Cancel";
+                    listCurrContent = subjectName;
+                } else {
+                    alert("Please Complete Previous Subject Name Edit First");
+                }
+            } else {
+                let subjectName = prevElem.value.trim();
+                if(subjectName){
+                    if(!array.includes(subjectName)){
+                        let newHeaderElem = document.createElement('h3');
+                        newHeaderElem.className = "flex-grow-1";
+                        newHeaderElem.innerText = subjectName;
+                        prevElem.parentNode.replaceChild(newHeaderElem, prevElem);
+                        currElem.innerText = "Edit";
+                        nextElem.innerText = "Remove";
+                        array = array.map(item => item === listCurrContent ? subjectName : item);
+                        //console.log(array);
+                    } else {
+                        alert("Subject Name Already Exist");
+                    }
+                } else {
+                    alert("Subject Name Can't be empty");
+                }
+                currEvent = false;  
+            }
+        }
+    </script>
+</body>
+</html>
